@@ -1,0 +1,47 @@
+# Release new version to NPM when Pull requests are merged
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.4.2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+
+      - uses: actions/cache@v3.0.2
+        id: cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/yarn-lock.json') }}
+
+      - name: install dependencies
+        run: yarn
+
+      - name: Get date
+        id: date
+        run: |
+          echo "::set-output name=date::$(date +%Y-%m-%d_%H-%M-%S)"
+
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        id: changesets
+        with:
+          publish: yarn build-release
+          commit: 'chore: entering prerelease mode'
+          title: ':rocket: Release ${{ steps.date.outputs.date }} :rocket:'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

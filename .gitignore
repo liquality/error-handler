@@ -1,0 +1,42 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Coverage
+coverage
+
+# Compiled files
+dist/
+
+# yarn
+.yarn/cache
+.yarn/versions
+.yarn/install-state.gz
+.yarn/unplugged
+
+# VS Code
+.vscode
+!.vscode/tasks.js
+
+# JetBrains IDEs
+.idea/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Misc
+.DS_Store
+
+# yarn
+.yarn/cache
+.yarn/versions
+.yarn/install-state.gz
+.yarn/unplugged
+/.env
