@@ -20,7 +20,7 @@ describe('handlers call', () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrapper.wrap(() => targetWithError(),target)
+            wrapper.wrap(targetWithError,[], null, target)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -29,7 +29,7 @@ describe('handlers call', () => {
     it.each(targets)("Handler for %s return proper Error Meaning", target => {
 
         const error: LiqualityError<unknown> = getError(() => {
-            wrapper.wrap(() => targetWithError(),target)
+            wrapper.wrap(targetWithError,[], null, target)
         });
         
         expect(error.code).toBeTruthy();

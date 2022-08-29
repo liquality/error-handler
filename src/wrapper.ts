@@ -18,19 +18,27 @@ export class Wrapper {
         this._reportConfig = reportConfig;
     }
 
-    public wrap<T>(func: () => T, target: Targets, _context?: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public wrap<T extends (...args:any[]) => any>(func: T, args:Parameters<T>, obj: any, target: Targets): ReturnType<T> | undefined{
         try {
-            return func();
+            if(obj && typeof obj[func.name] === 'function'){
+                return obj[func.name](...args);
+            }
+            return func(...args);
         } catch (error) {
             this.handleError(error,target);
         }
     }
     
-    public async wrapAsync<T>(func: () => Promise<T>, target: Targets, _context?: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, args:Parameters<T>, obj: any, target: Targets): Promise<ReturnType<T> | undefined>{
         try {
-            return await func();
+            if(obj && typeof obj[func.name] === 'function'){
+                return await obj[func.name](...args);
+            }
+            return await func(...args);
         } catch (error) {
-            this.handleError(error, target);
+            this.handleError(error,target);
         }
     }
 
