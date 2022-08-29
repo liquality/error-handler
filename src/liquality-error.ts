@@ -7,13 +7,16 @@ export class LiqualityError<SourceError> extends Error {
     private _msgDescription: string;
     private _rawError: SourceError;
     private _devMsg: unknown;
+    private _args: unknown;
 
-    constructor(error: Partial<ErrorMeaning & {rawError: SourceError}>){
+
+    constructor(error: Partial<ErrorMeaning & {rawError: SourceError, args: unknown}>){
         super();
         if(error?.code) this._code = error?.code;
         if(error?.errorType) this._errorType = error?.errorType;
         if(error?.message) this.message = error?.message;
         if(error?.devMsg) this._devMsg= error?.devMsg;
+        if(error?.args) this._args= error?.args;
         if(error?.rawError) this._rawError = error?.rawError;
     }
 
@@ -35,6 +38,10 @@ export class LiqualityError<SourceError> extends Error {
 
     public get devMsg() {
         return this._devMsg;
+    }
+
+    public get args() {
+        return this._args;
     }
 
 }
