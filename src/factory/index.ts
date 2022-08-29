@@ -1,8 +1,9 @@
 // Import handler classes here
 
-import { HANDLERS } from "../config";
+import { HANDLERS, MESSAGES } from "../config";
 import { BaseHandler } from "../handlers/base-handler";
-import { Targets } from "../types";
+import { LiqualityError } from "../liquality-error";
+import { ErrorType, Targets, UserContext } from "../types";
 
 const handlerCache: { [key: string]: BaseHandler } = {};
 
@@ -23,4 +24,16 @@ export function getHandler(target: Targets): BaseHandler{
     if(cachedHandler) return cachedHandler;
 
     return createHandler(target);
+}
+
+export function getMessage(type: ErrorType, context: UserContext, data: unknown): string | null{
+    if(type === ErrorType.Unknown) {
+        return "We are sorry! This is one of those time when even we ourselves are short of words as to what happened, Try restarting";
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const msgCreator = (MESSAGES as any)[type][context];
+    if(msgCreator){
+        return msgCreator(data);
+    }
+    throw new LiqualityError({errorType: ErrorType.InvalidErrMsgRequest});
 }

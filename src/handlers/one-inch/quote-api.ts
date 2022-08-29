@@ -1,5 +1,5 @@
 import { ERR_CODE_PREFIX } from "../../config";
-import { ErrorMeaning } from "../../types";
+import { ErrorMeaning, ErrorType } from "../../types";
 import { BaseHandler } from "../base-handler";
 import { errors, errorTypes } from "./config";
 import { OneInchSourceError } from "./types";
@@ -17,6 +17,7 @@ export class OneInchQuoteAPIHandler extends BaseHandler<OneInchSourceError> {
     protected _handleError(_error: OneInchSourceError): ErrorMeaning {
         return {
             code: this.errCodes.Validation,
+            errorType: ErrorType.Validation,
             message: 'Problem with history is giving troubles, Try Clearing Browser Cache or reinnstall wallet',
             devMsg:'Not Sure what more to say',
         };

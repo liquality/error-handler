@@ -2,7 +2,7 @@
 
 import { getError, targetWithError } from ".";
 import { LiqualityError } from "../liquality-error";
-import { Targets } from "../types";
+import { ErrorType, Targets } from "../types";
 import { Wrapper } from "../wrapper";
 
 // - handleError should return an ErrorMeaning Object when each of the available handlers are invoked.
@@ -33,6 +33,7 @@ describe('handlers call', () => {
         });
         
         expect(error.code).toBeTruthy();
+        expect(Object.values(ErrorType).includes(error.errorType)).toBe(true);
         expect(error.code).toBeGreaterThan(1000); // 1000 is the least code
         expect(error.message).toBeTruthy();
         expect(error.devMsg).toBeTruthy();

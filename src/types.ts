@@ -9,6 +9,8 @@ export type ErrorCodes = Record<ErrorType, number>;
 export enum ErrorType {
     Validation = 'Validation',
     Internal = 'Internal',
+    InvalidErrMsgRequest = 'InvalidErrMsgRequest',
+    Unknown = 'Unknown'
 }
 
 export interface DiscordReportConfig {
@@ -35,9 +37,18 @@ export interface ErrorMeaning {
     code: number;
     message: string;
     devMsg: string;
+    errorType: ErrorType;
 }
 
+// These are the 
+export enum UserContext {
+    LOGIN = "LOGIN",
+}
 
-
+export interface MessageCreators {
+    [ErrorType.Validation]: {
+        [UserContext.LOGIN]: (data: unknown) => string
+    }
+}
 
 

@@ -2,7 +2,7 @@ import { asyncTargetWithError, FAKE_ERROR, getError, getErrorAsync, targetWithEr
 import { DEFAULT_ERR_CODES, REPORTERS } from "../config";
 import { BaseHandler } from "../handlers/base-handler";
 import { LiqualityError } from "../liquality-error";
-import { ReportType, Targets } from "../types";
+import { ErrorType, ReportType, Targets } from "../types";
 import { Wrapper } from "../wrapper";
 
 // These tests are focused on checking the functionality of Wrapper.
@@ -13,6 +13,7 @@ describe('wrapped call', () => {
     beforeAll(() => {
         jest.spyOn(BaseHandler.prototype, 'handleError').mockImplementation(() => { return {
             code: DEFAULT_ERR_CODES.Validation,
+            errorType: ErrorType.Validation,
             message: 'Problem with history is giving troubles, Try Clearing Browser Cache or reinnstall wallet',
             devMsg:'Not Sure what more to say',
         }});

@@ -1,22 +1,28 @@
-import { ErrorMeaning } from "./types";
+import { ErrorMeaning, ErrorType } from "./types";
 
 // @TODO Think more about message and message templates.
 export class LiqualityError<SourceError> extends Error {
     private _code: number;
+    private _errorType: ErrorType;
     private _msgDescription: string;
     private _rawError: SourceError;
     private _devMsg: unknown;
 
-    constructor(error: ErrorMeaning & {rawError: SourceError}){
+    constructor(error: Partial<ErrorMeaning & {rawError: SourceError}>){
         super();
-        this._code = error.code;
-        this.message = error.message;
-        this._devMsg = error.devMsg;
-        this._rawError = error.rawError;
+        if(error?.code) this._code = error?.code;
+        if(error?.errorType) this._errorType = error?.errorType;
+        if(error?.message) this.message = error?.message;
+        if(error?.devMsg) this._devMsg= error?.devMsg;
+        if(error?.rawError) this._rawError = error?.rawError;
     }
 
     public get code() {
         return this._code;
+    }
+
+    public get errorType() {
+        return this._errorType;
     }
 
     public get msgDescription() {
