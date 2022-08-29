@@ -10,7 +10,7 @@ export class LiqualityError<SourceError> extends Error {
     constructor(error: ErrorMeaning & {rawError: SourceError}){
         super();
         this._code = error.code;
-        this._msgDescription = error.msgDescription;
+        this.message = error.message;
         this._devMsg = error.devMsg;
         this._rawError = error.rawError;
     }

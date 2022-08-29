@@ -13,7 +13,7 @@ describe('wrapped call', () => {
     beforeAll(() => {
         jest.spyOn(BaseHandler.prototype, 'handleError').mockImplementation(() => { return {
             code: DEFAULT_ERR_CODES.Validation,
-            msgDescription: 'Problem with history is giving troubles, Try Clearing Browser Cache or reinnstall wallet',
+            message: 'Problem with history is giving troubles, Try Clearing Browser Cache or reinnstall wallet',
             devMsg:'Not Sure what more to say',
         }});
     });

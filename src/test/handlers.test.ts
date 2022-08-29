@@ -34,7 +34,7 @@ describe('handlers call', () => {
         
         expect(error.code).toBeTruthy();
         expect(error.code).toBeGreaterThan(1000); // 1000 is the least code
-        expect(error.msgDescription).toBeTruthy();
+        expect(error.message).toBeTruthy();
         expect(error.devMsg).toBeTruthy();
         expect(error.rawError).toBeTruthy();
     });

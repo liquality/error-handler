@@ -33,7 +33,7 @@ export interface ReportConfig{
 
 export interface ErrorMeaning {
     code: number;
-    msgDescription: string;
+    message: string;
     devMsg: string;
 }
 
