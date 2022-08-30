@@ -51,7 +51,7 @@ export class Wrapper {
         const handler = getHandler(target); // Get error handler
         const meaning: ErrorMeaning = handler.handleError(error); // Get the meaning of the error.
 
-        const liqError = new LiqualityError({...meaning, devMsg: args, rawError: error}); // Create liquality error
+        const liqError = new LiqualityError({...meaning, args, rawError: error}); // Create liquality error
 
         reportLiqError(liqError, this._reportConfig); // Report Liquality error
 

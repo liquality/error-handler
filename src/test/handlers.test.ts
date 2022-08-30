@@ -8,7 +8,7 @@ import { Wrapper } from "../wrapper";
 // - handleError should return an ErrorMeaning Object when each of the available handlers are invoked.
 // - no console statement should be found in each of the available handlers.
 
-describe('handlers call', () => {
+describe('For wrapped call', () => {
     let wrapper: Wrapper;
 
     beforeEach(() => {
@@ -35,8 +35,9 @@ describe('handlers call', () => {
         expect(error.code).toBeTruthy();
         expect(Object.values(ErrorType).includes(error.errorType)).toBe(true);
         expect(error.code).toBeGreaterThan(1000); // 1000 is the least code
-        expect(error.message).toBeTruthy();
+        expect(error.message).toBeFalsy();
         expect(error.devMsg).toBeTruthy();
         expect(error.rawError).toBeTruthy();
+        expect(error.args).toBeInstanceOf(Array);
     });
 });
