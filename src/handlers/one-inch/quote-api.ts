@@ -18,7 +18,6 @@ export class OneInchQuoteAPIHandler extends BaseHandler<OneInchSourceError> {
         return {
             code: this.errCodes.Validation,
             errorType: ErrorType.Validation,
-            message: 'Problem with history is giving troubles, Try Clearing Browser Cache or reinnstall wallet',
             devMsg:'Not Sure what more to say',
         };
     }

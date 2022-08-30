@@ -35,19 +35,19 @@ export interface ReportConfig{
 
 export interface ErrorMeaning {
     code: number;
-    message: string;
     devMsg: string;
     errorType: ErrorType;
 }
 
 // These are the 
 export enum UserContext {
+    NA = 'NA',
     LOGIN = "LOGIN",
 }
 
 export interface MessageCreators {
     [ErrorType.Validation]: {
-        [UserContext.LOGIN]: (data: unknown) => string
+        [UserContext.LOGIN]: (data: unknown) => string | string
     }
 }
 

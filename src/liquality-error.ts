@@ -14,7 +14,6 @@ export class LiqualityError<SourceError> extends Error {
         super();
         if(error?.code) this._code = error?.code;
         if(error?.errorType) this._errorType = error?.errorType;
-        if(error?.message) this.message = error?.message;
         if(error?.devMsg) this._devMsg= error?.devMsg;
         if(error?.args) this._args= error?.args;
         if(error?.rawError) this._rawError = error?.rawError;
