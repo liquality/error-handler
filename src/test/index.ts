@@ -1,8 +1,8 @@
-export function targetWithError() {
+export function functionWithError() {
     throw FAKE_ERROR;
 }
 
-export async function asyncTargetWithError() {
+export async function asyncFunctionWithError() {
     throw FAKE_ERROR;
 }
 

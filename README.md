@@ -16,8 +16,7 @@ Error Hanlder is an Error Handling Library for Liquality. It's an effort to unde
 ## Usage
 Any error prone call can take advantage of the Error Handler by making such calls through the Error Handler's wrapper function. Simply pass the following inputs to the wrapper function
 1) Call - This is the error-prone call you wish to make
-2) Target - This is an Id for the external endpoint or package or package function involved in the call. The Error handler package has a handler class for each target. So this information is vital
-3) Context - This is optional extra information that would help in producing a more meaningful error.
+2) ErrorSource - This is an Id for the external endpoint or package or package function involved in the call. The Error handler package has a handler class for each error source. So this information is vital
 
 
 ```typescript

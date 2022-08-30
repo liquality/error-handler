@@ -1,11 +1,11 @@
 // Export wrapper function that accepts
-// Inputs: Callback Target, Context params
+// Inputs: Callback, Error Source
 // Output: throw a standard error if error caught
 
 import { getHandler } from "./factory";
 import { LiqualityError } from "./liquality-error";
 import { reportLiqError } from "./reporters";
-import { ErrorMeaning, ReportConfig, Targets } from "./types";
+import { ErrorMeaning, ReportConfig, ErrorSource } from "./types";
 
 // @TODO Think more about context.
 export class Wrapper {
@@ -19,26 +19,26 @@ export class Wrapper {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public wrap<T extends (...args:any[]) => any>(func: T, args:Parameters<T>, obj: any, target: Targets): ReturnType<T> | undefined{
+    public wrap<T extends (...args:any[]) => any>(func: T, args:Parameters<T>, obj: any, errorSource: ErrorSource): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return obj[func.name](...args);
             }
             return func(...args);
         } catch (error) {
-            this.handleError(error,target,args);
+            this.handleError(error,errorSource,args);
         }
     }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, args:Parameters<T>, obj: any, target: Targets): Promise<ReturnType<T> | undefined>{
+    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, args:Parameters<T>, obj: any, errorSource: ErrorSource): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return await obj[func.name](...args);
             }
             return await func(...args);
         } catch (error) {
-            this.handleError(error,target,args);
+            this.handleError(error,errorSource,args);
         }
     }
 
@@ -47,8 +47,8 @@ export class Wrapper {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private handleError(error: string, target: Targets, args: any) {
-        const handler = getHandler(target); // Get error handler
+    private handleError(error: string, errorSource: ErrorSource, args: any) {
+        const handler = getHandler(errorSource); // Get error handler
         const meaning: ErrorMeaning = handler.handleError(error); // Get the meaning of the error.
 
         const liqError = new LiqualityError({...meaning, args, rawError: error}); // Create liquality error

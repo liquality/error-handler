@@ -3,15 +3,15 @@
 import { HANDLERS, MESSAGES } from "../config";
 import { BaseHandler } from "../handlers/base-handler";
 import { LiqualityError } from "../liquality-error";
-import { ErrorType, Targets, UserContext } from "../types";
+import { ErrorType, ErrorSource, UserContext } from "../types";
 
 const handlerCache: { [key: string]: BaseHandler } = {};
 
 // export function for instantiating handler classes.
 // Handler should be cached upon instantiation
-export function createHandler(target: Targets): BaseHandler {
-    const handler =  new HANDLERS[target]();
-    handlerCache[target] = handler;
+export function createHandler(errorSource: ErrorSource): BaseHandler {
+    const handler =  new HANDLERS[errorSource]();
+    handlerCache[errorSource] = handler;
 
     return handler;
 }
@@ -19,11 +19,11 @@ export function createHandler(target: Targets): BaseHandler {
 // export a function for getting a handler
 // The function should check cache first and only instantiate
 // a new handler if non exists in cache.
-export function getHandler(target: Targets): BaseHandler{
-    const cachedHandler = handlerCache[target];
+export function getHandler(errorSource: ErrorSource): BaseHandler{
+    const cachedHandler = handlerCache[errorSource];
     if(cachedHandler) return cachedHandler;
 
-    return createHandler(target);
+    return createHandler(errorSource);
 }
 
 export function getMessage(type: ErrorType, context?: UserContext, data?: unknown): string | null{

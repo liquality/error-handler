@@ -4,7 +4,7 @@ import { validationErrorAtLogin } from "./messages";
 import { reportToConsole } from "./reporters/console";
 import { reportToDiscord } from "./reporters/discord";
 import { reportToEmail } from "./reporters/email";
-import { ErrorCodes, ErrorType, MessageCreators, ReportType, Targets, UserContext } from "./types";
+import { ErrorCodes, ErrorType, MessageCreators, ReportType, ErrorSource, UserContext } from "./types";
 
 export const DEFAULT_ERR_CODES: ErrorCodes = (() => {
     let errorCodes = {};
@@ -15,13 +15,13 @@ export const DEFAULT_ERR_CODES: ErrorCodes = (() => {
     return errorCodes;
 })() as ErrorCodes;
 
-export const ERR_CODE_PREFIX: Record<Targets,number> = {
-    [Targets.OneInchQuoteAPI] : 1000
+export const ERR_CODE_PREFIX: Record<ErrorSource,number> = {
+    [ErrorSource.OneInchQuoteAPI] : 1000
 }
 
-// We will have a targetToHandlerClass mapping here ...
+// We will have a errorSourceToHandlerClass mapping here ...
 export const HANDLERS = {
-    [Targets.OneInchQuoteAPI]: OneInchQuoteAPIHandler
+    [ErrorSource.OneInchQuoteAPI]: OneInchQuoteAPIHandler
 }
 
 export const REPORTERS: Record<ReportType, (error: LiqualityError<unknown>) => void> = {
