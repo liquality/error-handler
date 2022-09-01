@@ -10,6 +10,7 @@ import { OneInchAPIErrorParser } from "../parsers";
 // Since handleError function has been mocked here, the choice of OneInchQuoteAPI does not bias the test in any way.
 describe('wrapped call', () => {
     let wrapper: Wrapper;
+    
     beforeAll(() => {
         jest.spyOn(OneInchAPIErrorParser.prototype, 'parseError').mockImplementation(() => { return new LiqualityError({
             errorType: ErrorType.InsufficientGasFee,
@@ -29,7 +30,7 @@ describe('wrapped call', () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrapper.wrap(functionWithError,[], null, ErrorSource.OneInchAPI)
+            wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -38,7 +39,7 @@ describe('wrapped call', () => {
     describe('that throws error', () => {
         it('should throw a Liquality Error(extends Error) if function is sync',async () => {
             const error = getError(() => {
-                wrapper.wrap(functionWithError,[], null, ErrorSource.OneInchAPI)
+                wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(error).toBeInstanceOf(Error);            
@@ -48,7 +49,7 @@ describe('wrapped call', () => {
 
         it('should throw a Liquality Error(extends Error) if function is async',async () => {
             const error = await getErrorAsync(async () => {
-                await wrapper.wrapAsync(asyncFunctionWithError,[], null, ErrorSource.OneInchAPI)
+                await wrapper.wrapAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
             });
 
             expect(error).toBeInstanceOf(Error);
@@ -61,7 +62,7 @@ describe('wrapped call', () => {
             const reportToConsoleSpy = jest.spyOn(REPORTERS, ReportType.Console);
 
             getError(() => {
-                wrapper.wrap(functionWithError,[], null, ErrorSource.OneInchAPI)
+                wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(reportToConsoleSpy).toHaveBeenCalled();

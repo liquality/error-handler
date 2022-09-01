@@ -22,4 +22,4 @@ export async function getErrorAsync(func: () => Promise<unknown>) {
     }
 }
 
-export const FAKE_ERROR = "Insufficient liquidity";
+export const FAKE_ERROR = "Fake Error";

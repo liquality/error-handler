@@ -16,7 +16,7 @@ export class Wrapper {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public wrap<T extends (...args:any[]) => any>(func: T, args:Parameters<T>, obj: any, errorSource: ErrorSource): ReturnType<T> | undefined{
+    public wrap<T extends (...args:any[]) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj:any = null,): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return obj[func.name](...args);
@@ -28,7 +28,7 @@ export class Wrapper {
     }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, args:Parameters<T>, obj: any, errorSource: ErrorSource): Promise<ReturnType<T> | undefined>{
+    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj: any = null,): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return await obj[func.name](...args);

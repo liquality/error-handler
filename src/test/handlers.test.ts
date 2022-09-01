@@ -18,7 +18,7 @@ describe('For wrapped call', () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrapper.wrap(functionWithError,[], null, errorSource)
+            wrapper.wrap(functionWithError,errorSource)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -27,7 +27,7 @@ describe('For wrapped call', () => {
     it.each(errorSources)("Handler for %s return proper Error Meaning", errorSource => {
 
         const error: LiqualityError = getError(() => {
-            wrapper.wrap(functionWithError,[], null, errorSource)
+            wrapper.wrap(functionWithError,errorSource)
         });
         
         expect(error.code).toBeTruthy();
