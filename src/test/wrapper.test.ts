@@ -16,7 +16,7 @@ describe('wrapped call', () => {
             code: ERROR_CODES.OneInchAPI,
             userMsg: ErrorMessages.InsufficientGasFee(),
             devMsg:'Not Sure what more to say',
-            rawError: {} as never,
+            rawError: FAKE_ERROR as never,
             data: []
         })});
     });
