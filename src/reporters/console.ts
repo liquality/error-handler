@@ -1,5 +1,5 @@
 import { LiqualityError } from "../liquality-error";
 
-export function reportToConsole<SourceError>(error: LiqualityError<SourceError>){
+export function reportToConsole(error: LiqualityError){
     console.log(error);
 }

@@ -1,5 +1,5 @@
 import { LiqualityError } from "../liquality-error";
 
-export function reportToDiscord<SourceError>(_error: LiqualityError<SourceError>){
+export function reportToDiscord(_error: LiqualityError){
     // Coming soon.
 }

@@ -1,11 +1,7 @@
-// Export wrapper function that accepts
-// Inputs: Callback, Error Source
-// Output: throw a standard error if error caught
 
-import { getHandler } from "./factory";
-import { LiqualityError } from "./liquality-error";
+import { getParser } from "./factory";
 import { reportLiqError } from "./reporters";
-import { ErrorMeaning, ReportConfig, ErrorSource } from "./types";
+import { ReportConfig, ErrorSource } from "./types/types";
 
 // @TODO Think more about context.
 export class Wrapper {
@@ -14,6 +10,7 @@ export class Wrapper {
     // One of which is credentials that will enable reporting errors
     // E.g Discord Credentials or Email Credentials.
     private _reportConfig: ReportConfig;
+
     constructor(reportConfig: ReportConfig = {}){
         this._reportConfig = reportConfig;
     }
@@ -26,7 +23,7 @@ export class Wrapper {
             }
             return func(...args);
         } catch (error) {
-            this.handleError(error,errorSource,args);
+            this.parseError(error,errorSource,args);
         }
     }
     
@@ -38,7 +35,7 @@ export class Wrapper {
             }
             return await func(...args);
         } catch (error) {
-            this.handleError(error,errorSource,args);
+            this.parseError(error, errorSource, args);
         }
     }
 
@@ -47,12 +44,9 @@ export class Wrapper {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private handleError(error: string, errorSource: ErrorSource, args: any) {
-        const handler = getHandler(errorSource); // Get error handler
-        const meaning: ErrorMeaning = handler.handleError(error); // Get the meaning of the error.
-
-        const liqError = new LiqualityError({...meaning, args, rawError: error}); // Create liquality error
-
+    private parseError(error: string, errorSource: ErrorSource, data: Array<any>) {
+        const parser = getParser(errorSource); // Get error parser class
+        const liqError = parser.parseError(error, data); // Get a Liquality standard error from parser.
         reportLiqError(liqError, this._reportConfig); // Report Liquality error
 
         throw liqError; 

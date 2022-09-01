@@ -2,11 +2,9 @@
 
 import { getError, functionWithError } from ".";
 import { LiqualityError } from "../liquality-error";
-import { ErrorType, ErrorSource } from "../types";
+import { ErrorSource, ErrorType } from "../types/types";
 import { Wrapper } from "../wrapper";
 
-// - handleError should return an ErrorMeaning Object when each of the available handlers are invoked.
-// - no console statement should be found in each of the available handlers.
 
 describe('For wrapped call', () => {
     let wrapper: Wrapper;
@@ -28,16 +26,16 @@ describe('For wrapped call', () => {
 
     it.each(errorSources)("Handler for %s return proper Error Meaning", errorSource => {
 
-        const error: LiqualityError<unknown> = getError(() => {
+        const error: LiqualityError = getError(() => {
             wrapper.wrap(functionWithError,[], null, errorSource)
         });
         
         expect(error.code).toBeTruthy();
         expect(Object.values(ErrorType).includes(error.errorType)).toBe(true);
-        expect(error.code).toBeGreaterThan(1000); // 1000 is the least code
-        expect(error.message).toBeFalsy();
-        expect(error.devMsg).toBeTruthy();
+        expect(error.code).toBeGreaterThanOrEqual(1000); // 1000 is the least code
+        expect(error.userMsg.cause).toBeTruthy();
+        expect(error.userMsg.suggestions).toBeInstanceOf(Array);
         expect(error.rawError).toBeTruthy();
-        expect(error.args).toBeInstanceOf(Array);
+        expect(error.data).toBeInstanceOf(Array);
     });
 });

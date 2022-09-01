@@ -1,37 +1,79 @@
-import { OneInchQuoteAPIHandler } from "./handlers/one-inch/quote-api";
 import { LiqualityError } from "./liquality-error";
-import { validationErrorAtLogin } from "./messages";
 import { reportToConsole } from "./reporters/console";
 import { reportToDiscord } from "./reporters/discord";
 import { reportToEmail } from "./reporters/email";
-import { ErrorCodes, ErrorType, MessageCreators, ReportType, ErrorSource, UserContext } from "./types";
+import {ReportType, ErrorSource, ErrorType, ErrorMessage } from "./types/types";
+import { OneInchAPIErrorParser } from "./parsers";
 
-export const DEFAULT_ERR_CODES: ErrorCodes = (() => {
-    let errorCodes = {};
-    Object.keys(ErrorType).forEach((errorType, index) => {
-        errorCodes = {...errorCodes, [errorType]: index + 1}
-    });
 
-    return errorCodes;
-})() as ErrorCodes;
-
-export const ERR_CODE_PREFIX: Record<ErrorSource,number> = {
-    [ErrorSource.OneInchQuoteAPI] : 1000
+export const ERROR_CODES: Record<ErrorSource,number> = {
+    [ErrorSource.OneInchAPI] : 1000
 }
 
 // We will have a errorSourceToHandlerClass mapping here ...
-export const HANDLERS = {
-    [ErrorSource.OneInchQuoteAPI]: OneInchQuoteAPIHandler
+export const PARSERS = {
+    [ErrorSource.OneInchAPI]: OneInchAPIErrorParser
 }
 
-export const REPORTERS: Record<ReportType, (error: LiqualityError<unknown>) => void> = {
+export const REPORTERS: Record<ReportType, (error: LiqualityError) => void> = {
     [ReportType.Console]: reportToConsole,
     [ReportType.Discord]: reportToDiscord,
     [ReportType.Email]: reportToEmail,
 }
 
-export const MESSAGES: MessageCreators = {
-    [ErrorType.Validation] : {
-        [UserContext.LOGIN]: validationErrorAtLogin,
+export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMessage> = {
+    [ErrorType.InternalError]: (errorcode: string) => {
+        return {
+            cause: 'Sorry, something went wrong while processing this transaction.',
+            suggestions: [
+                'Try again at a later time',
+                `If it persist, please contact support on discord with errorCode: ${errorcode}`
+            ]
+        }
+    },
+    [ErrorType.InsufficientLiquidity]: () => {
+        return {
+            cause: 'Sorry, your swap transaction could not be completed due to not enough liquidity on the selected swap provider.',
+            suggestions: [
+                'Reduce your swap amount',
+                'Try a different swap pair',
+                'Select a different swap provider from our list of swap providers',
+                'Try again at a later time'
+            ]
+        }
+    },
+    [ErrorType.QuoteError]: (errorcode: string) => {
+        return {
+            cause: 'Sorry, quote could not be obtained for this swap at the moment, this could be due to network congestion or the pair you\'re trying to swap.',
+            suggestions: [
+                'Try another swap pair',
+                'Try again at a later time',
+                `If it persist, please contact support on discord with errorCode: ${errorcode}`
+            ]
+        }
+    },
+    [ErrorType.InsufficientGasFee]: (currency = "native currency", feeDeficit?: string ) => {
+        return {
+            cause:  `Sorry, you do not have enough ${currency} to cover transaction fee.  ${feeDeficit? 'You will need additional ' + feeDeficit + currency : ''}`,
+            suggestions: []
+        }
+    },
+    [ErrorType.InsufficientFunds]: () => {
+        return {
+            cause:  '',
+            suggestions: []
+        }
+    },
+    [ErrorType.InsufficientAllowance]: () => {
+        return {
+            cause:  '',
+            suggestions: []
+        }
+    },
+    [ErrorType.Unknown]: () => {
+        return {
+            cause:  'Sorry, something went wrong while processing this transaction.',
+            suggestions: []
+        }
     }
 }

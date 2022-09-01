@@ -1,11 +1,8 @@
 import { REPORTERS } from "../config";
 import { LiqualityError } from "../liquality-error";
-import { ReportConfig, ReportType } from "../types";
-// import { reportToConsole } from "./console";
-// import { reportToDiscord } from "./discord";
-// import { reportToEmail } from "./email";
+import { ReportConfig, ReportType } from "../types/types";
 
-export function reportLiqError<SourceError>(error: LiqualityError<SourceError>, config: ReportConfig){
+export function reportLiqError(error: LiqualityError, config: ReportConfig){
     const reportTypes = Object.keys(config) as Array<ReportType>;
     const validReportTypes = Object.values(ReportType);
     if(reportTypes.length === 0) return;
@@ -15,5 +12,3 @@ export function reportLiqError<SourceError>(error: LiqualityError<SourceError>, 
         }
     })
 }
-
-// export {Reporters: {reportToConsole, reportToDiscord, reportToEmail}};

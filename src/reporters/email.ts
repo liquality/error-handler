@@ -1,5 +1,5 @@
 import { LiqualityError } from "../liquality-error";
 
-export function reportToEmail<SourceError>(_error: LiqualityError<SourceError>){
+export function reportToEmail(_error: LiqualityError){
     // Coming soon.
 }

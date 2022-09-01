@@ -1,40 +1,25 @@
 // Import handler classes here
 
-import { HANDLERS, MESSAGES } from "../config";
-import { BaseHandler } from "../handlers/base-handler";
-import { LiqualityError } from "../liquality-error";
-import { ErrorType, ErrorSource, UserContext } from "../types";
+import { PARSERS } from "../config";
+import { ErrorSource, ErrorParser } from "../types/types";
 
-const handlerCache: { [key: string]: BaseHandler } = {};
+const parserCache: { [key: string]: ErrorParser<unknown> } = {};
 
 // export function for instantiating handler classes.
 // Handler should be cached upon instantiation
-export function createHandler(errorSource: ErrorSource): BaseHandler {
-    const handler =  new HANDLERS[errorSource]();
-    handlerCache[errorSource] = handler;
+export function createParser(errorSource: ErrorSource): ErrorParser<unknown> {
+    const parser =  new PARSERS[errorSource]();
+    parserCache[errorSource] = parser;
 
-    return handler;
+    return parser;
 }
 
 // export a function for getting a handler
 // The function should check cache first and only instantiate
 // a new handler if non exists in cache.
-export function getHandler(errorSource: ErrorSource): BaseHandler{
-    const cachedHandler = handlerCache[errorSource];
+export function getParser(errorSource: ErrorSource): ErrorParser<unknown>{
+    const cachedHandler = parserCache[errorSource];
     if(cachedHandler) return cachedHandler;
 
-    return createHandler(errorSource);
-}
-
-export function getMessage(type: ErrorType, context?: UserContext, data?: unknown): string | null{
-    if(type === ErrorType.Unknown) {
-        return "We are sorry! This is one of those time when even we ourselves are short of words as to what happened, Try restarting";
-    }
-    if(!context) context = UserContext.NA
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const msgCreator = (MESSAGES as any)[type][context];
-    if(msgCreator){
-        return msgCreator(data);
-    }
-    throw new LiqualityError({errorType: ErrorType.InvalidErrMsgRequest});
+    return createParser(errorSource);
 }
