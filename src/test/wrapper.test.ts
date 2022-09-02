@@ -1,16 +1,15 @@
-import { asyncFunctionWithError, FAKE_ERROR, getError, getErrorAsync, functionWithError } from ".";
+import { FAKE_ERROR, getError, functionWithError, asyncFunctionWithError, getErrorAsync } from ".";
 import { ErrorMessages, ERROR_CODES, REPORTERS } from "../config";
 import { LiqualityError } from "../liquality-error";
-import { ErrorType, ReportType, ErrorSource } from "../types/types";
-import { Wrapper } from "../wrapper";
+import { ErrorType, ErrorSource, ReportType } from "../types/types";
 import { OneInchAPIErrorParser } from "../parsers";
+import { wrap, wrapAsync } from "../wrapper";
+import { setReportConfig } from "../reporters";
 
 // These tests are focused on checking the functionality of Wrapper.
 // OneInchQuoteAPI handler was arbitrarily chosen to aid in the test.
 // Since handleError function has been mocked here, the choice of OneInchQuoteAPI does not bias the test in any way.
-describe('wrapped call', () => {
-    let wrapper: Wrapper;
-    
+describe('wrapped call', () => {    
     beforeAll(() => {
         jest.spyOn(OneInchAPIErrorParser.prototype, 'parseError').mockImplementation(() => { return new LiqualityError({
             errorType: ErrorType.InsufficientGasFee,
@@ -22,15 +21,11 @@ describe('wrapped call', () => {
         })});
     });
 
-    beforeEach(() => {
-        wrapper = new Wrapper();
-    })
-
     it('should should not log anything',async () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
+            wrap(functionWithError,ErrorSource.OneInchAPI)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -39,7 +34,7 @@ describe('wrapped call', () => {
     describe('that throws error', () => {
         it('should throw a Liquality Error(extends Error) if function is sync',async () => {
             const error = getError(() => {
-                wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
+                wrap(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(error).toBeInstanceOf(Error);            
@@ -49,7 +44,7 @@ describe('wrapped call', () => {
 
         it('should throw a Liquality Error(extends Error) if function is async',async () => {
             const error = await getErrorAsync(async () => {
-                await wrapper.wrapAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
+                await wrapAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
             });
 
             expect(error).toBeInstanceOf(Error);
@@ -58,11 +53,11 @@ describe('wrapped call', () => {
         });
 
         it('should report error to console if console reporting enabled',async () => {
-            wrapper.reportConfig({[ReportType.Console]: true});
+            setReportConfig({[ReportType.Console]: true});
             const reportToConsoleSpy = jest.spyOn(REPORTERS, ReportType.Console);
 
             getError(() => {
-                wrapper.wrap(functionWithError,ErrorSource.OneInchAPI)
+                wrap(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(reportToConsoleSpy).toHaveBeenCalled();

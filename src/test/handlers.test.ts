@@ -3,22 +3,17 @@
 import { getError, functionWithError } from ".";
 import { LiqualityError } from "../liquality-error";
 import { ErrorSource, ErrorType } from "../types/types";
-import { Wrapper } from "../wrapper";
+import { wrap } from "../wrapper";
 
 
 describe('For wrapped call', () => {
-    let wrapper: Wrapper;
-
-    beforeEach(() => {
-        wrapper = new Wrapper();
-    })
 
     const errorSources = Object.values(ErrorSource);
     it.each(errorSources)("Handler for %s should not log anything to console", errorSource => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrapper.wrap(functionWithError,errorSource)
+            wrap(functionWithError,errorSource)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -27,7 +22,7 @@ describe('For wrapped call', () => {
     it.each(errorSources)("Handler for %s return proper Error Meaning", errorSource => {
 
         const error: LiqualityError = getError(() => {
-            wrapper.wrap(functionWithError,errorSource)
+            wrap(functionWithError,errorSource)
         });
         
         expect(error.code).toBeTruthy();

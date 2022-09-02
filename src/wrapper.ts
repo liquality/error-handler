@@ -1,54 +1,38 @@
 
 import { getParser } from "./factory";
 import { reportLiqError } from "./reporters";
-import { ReportConfig, ErrorSource } from "./types/types";
-
-// @TODO Think more about context.
-export class Wrapper {
-
-    // Config will contain setup information
-    // One of which is credentials that will enable reporting errors
-    // E.g Discord Credentials or Email Credentials.
-    private _reportConfig: ReportConfig;
-
-    constructor(reportConfig: ReportConfig = {}){
-        this._reportConfig = reportConfig;
-    }
+import { ErrorSource } from "./types/types";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public wrap<T extends (...args:any[]) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj:any = null,): ReturnType<T> | undefined{
+    export function wrap<T extends (...args:any[]) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj:any = null,): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return obj[func.name](...args);
             }
             return func(...args);
         } catch (error) {
-            this.parseError(error,errorSource,args);
+            parseError(error,errorSource,args);
         }
     }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public async wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj: any = null,): Promise<ReturnType<T> | undefined>{
+    export async function wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj: any = null,): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return await obj[func.name](...args);
             }
             return await func(...args);
         } catch (error) {
-            this.parseError(error, errorSource, args);
+            parseError(error, errorSource, args);
         }
     }
 
-    public reportConfig(config: ReportConfig) {
-        this._reportConfig = config;
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private parseError(error: string, errorSource: ErrorSource, data: Array<any>) {
+    function parseError(error: string, errorSource: ErrorSource, data: Array<any>) {
         const parser = getParser(errorSource); // Get error parser class
         const liqError = parser.parseError(error, data); // Get a Liquality standard error from parser.
-        reportLiqError(liqError, this._reportConfig); // Report Liquality error
+        reportLiqError(liqError); // Report Liquality error
 
         throw liqError; 
     }
-}
