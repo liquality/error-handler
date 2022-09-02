@@ -7,7 +7,7 @@ import { wrap, wrapAsync } from "../wrapper";
 import { setReportConfig } from "../reporters";
 
 // These tests are focused on checking the functionality of Wrapper.
-// OneInchQuoteAPI handler was arbitrarily chosen to aid in the test.
+// OneInchQuoteAPI parser was arbitrarily chosen to aid in the test.
 // Since handleError function has been mocked here, the choice of OneInchQuoteAPI does not bias the test in any way.
 describe('wrapped call', () => {    
     beforeAll(() => {

@@ -1,7 +1,7 @@
-# Error Handler
+# Error Parser
 
 <pre>
-ERROR HANDLER
+ERROR PARSER
 </pre>
 
 
@@ -9,14 +9,14 @@ Error Hanlder is an Error Handling Library for Liquality. It's an effort to unde
 
 # Install
 
-`npm install @liquality/error-handler`
+`npm install @liquality/error-parser`
 
-`yarn add @liquality/error-handler`
+`yarn add @liquality/error-parser`
 
 ## Usage
-Any error prone call can take advantage of the Error Handler by making such calls through the Error Handler's wrapper function. Simply pass the following inputs to the wrapper function
+Any error prone call can take advantage of the Error Parser by making such calls through the Error Parser's wrapper function. Simply pass the following inputs to the wrapper function
 1) Call - This is the error-prone call you wish to make
-2) ErrorSource - This is an Id for the external endpoint or package or package function involved in the call. The Error handler package has a parser class for each error source. So this information is vital
+2) ErrorSource - This is an Id for the external endpoint or package or package function involved in the call. The Error parser package has a parser class for each error source. So this information is vital
 
 
 ```typescript

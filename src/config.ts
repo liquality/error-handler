@@ -10,7 +10,7 @@ export const ERROR_CODES: Record<ErrorSource,number> = {
     [ErrorSource.OneInchAPI] : 1000
 }
 
-// We will have a errorSourceToHandlerClass mapping here ...
+// We will have a errorSourceToParserClass mapping here ...
 export const PARSERS = {
     [ErrorSource.OneInchAPI]: OneInchAPIErrorParser
 }

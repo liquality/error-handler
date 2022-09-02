@@ -1,12 +1,12 @@
-// Import handler classes here
+// Import parser classes here
 
 import { PARSERS } from "../config";
 import { ErrorSource, ErrorParser } from "../types/types";
 
 const parserCache: { [key: string]: ErrorParser<unknown> } = {};
 
-// export function for instantiating handler classes.
-// Handler should be cached upon instantiation
+// export function for instantiating parser classes.
+// Parser should be cached upon instantiation
 export function createParser(errorSource: ErrorSource): ErrorParser<unknown> {
     const parser =  new PARSERS[errorSource]();
     parserCache[errorSource] = parser;
@@ -14,12 +14,12 @@ export function createParser(errorSource: ErrorSource): ErrorParser<unknown> {
     return parser;
 }
 
-// export a function for getting a handler
+// export a function for getting a parser
 // The function should check cache first and only instantiate
-// a new handler if non exists in cache.
+// a new parser if non exists in cache.
 export function getParser(errorSource: ErrorSource): ErrorParser<unknown>{
-    const cachedHandler = parserCache[errorSource];
-    if(cachedHandler) return cachedHandler;
+    const cachedParser = parserCache[errorSource];
+    if(cachedParser) return cachedParser;
 
     return createParser(errorSource);
 }

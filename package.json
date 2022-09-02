@@ -1,8 +1,8 @@
 {
-  "name": "@liquality/error-handler",
-  "version": "1.6.0",
+  "name": "@liquality/error-parser",
+  "version": "1.0.0",
   "description": "Error Handling Library for liquality",
-  "repository": "git@github.com:liquality/error-handler.git",
+  "repository": "git@github.com:liquality/error-parser.git",
   "author": "koderholic <meetenebelioluchi@gmail.com>",
   "license": "MIT",
   "module": "dist/index.js",

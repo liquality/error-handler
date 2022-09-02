@@ -926,9 +926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/error-handler@workspace:.":
+"@liquality/error-parser@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@liquality/error-handler@workspace:."
+  resolution: "@liquality/error-parser@workspace:."
   dependencies:
     "@babel/types": ^7.17.0
     "@commitlint/cli": ^16.2.3

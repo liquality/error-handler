@@ -9,7 +9,7 @@ import { wrap } from "../wrapper";
 describe('For wrapped call', () => {
 
     const errorSources = Object.values(ErrorSource);
-    it.each(errorSources)("Handler for %s should not log anything to console", errorSource => {
+    it.each(errorSources)("Parser for %s should not log anything to console", errorSource => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
@@ -19,7 +19,7 @@ describe('For wrapped call', () => {
         expect(logSpy).toHaveBeenCalledTimes(0);
     });
 
-    it.each(errorSources)("Handler for %s return proper Error Meaning", errorSource => {
+    it.each(errorSources)("Parser for %s return proper Error Meaning", errorSource => {
 
         const error: LiqualityError = getError(() => {
             wrap(functionWithError,errorSource)
