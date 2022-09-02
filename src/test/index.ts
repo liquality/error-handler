@@ -1,6 +1,16 @@
 
 export const FAKE_ERROR = "Fake Error";
 
+export class classWithErrorFunction {
+    public functionWithError() {
+        throw FAKE_ERROR;
+    }
+
+    public async asyncfunctionWithError() {
+        throw FAKE_ERROR;
+    }
+}
+
 export function functionWithError() {
     throw FAKE_ERROR;
 }
