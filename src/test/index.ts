@@ -1,3 +1,6 @@
+
+export const FAKE_ERROR = "Fake Error";
+
 export function functionWithError() {
     throw FAKE_ERROR;
 }
@@ -22,4 +25,3 @@ export async function getErrorAsync(func: () => Promise<unknown>) {
     }
 }
 
-export const FAKE_ERROR = "Fake Error";
