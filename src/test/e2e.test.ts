@@ -3,7 +3,7 @@ import { ERROR_CODES } from "../config";
 import { LiqualityError } from "../liquality-error";
 import { OneInchSourceError } from "../types/source-errors";
 import { ErrorSource } from "../types/types";
-import { withErrorWrapper } from "../wrapper";
+import { withErrorWrapper, wrapError } from "../wrapper";
 
 // These tests are focused on showing how the wrapper would work E2E assuming for example that the frontend calls walletCore
 // WalletCore calls an external endpoint
@@ -32,17 +32,36 @@ const mockOneInchAPI = () => {
 
 
 class MockWalletCore {
-    public swap() {
+    public swap1() {
         withErrorWrapper(mockOneInchAPI, ErrorSource.OneInchAPI);
     }
+
+    public swap2() {
+        try{
+            mockOneInchAPI();
+        }catch(error){
+            throw wrapError(error)
+        }    
+    }
+
 }
 describe('Frontend calls to wallet core', () => {
     const walletCore = new MockWalletCore();
 
     describe('that throws error', () => {
-        it('should throw a Liquality Error(extends Error) if function is sync',async () => {
+        it('should throw a Liquality Error(extends Error) if wrapped call approach are used',async () => {
             const error = getError(() => {
-                walletCore.swap();
+                walletCore.swap1();
+            });
+            
+            expect(error).toBeInstanceOf(Error);            
+            expect(error).toBeInstanceOf(LiqualityError);
+            expect(error.rawError).toBe(ONE_INCH_ERROR);
+        });
+
+        it('should throw a Liquality Error(extends Error) if wrapped error approach is used',async () => {
+            const error = getError(() => {
+                walletCore.swap2();
             });
             
             expect(error).toBeInstanceOf(Error);            

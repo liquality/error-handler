@@ -4,15 +4,18 @@ import { reportToDiscord } from "./reporters/discord";
 import { reportToEmail } from "./reporters/email";
 import {ReportType, ErrorSource, ErrorType, ErrorMessage } from "./types/types";
 import { OneInchAPIErrorParser } from "./parsers";
+import { UnknownSourceErrorParser } from "./parsers/UnknownSourceErrorParser";
 
 
 export const ERROR_CODES: Record<ErrorSource,number> = {
-    [ErrorSource.OneInchAPI] : 1000
+    [ErrorSource.OneInchAPI] : 1000,
+    [ErrorSource.UnknownSource] : 10000
 }
 
 // We will have a errorSourceToParserClass mapping here ...
 export const PARSERS = {
-    [ErrorSource.OneInchAPI]: OneInchAPIErrorParser
+    [ErrorSource.OneInchAPI]: OneInchAPIErrorParser,
+    [ErrorSource.UnknownSource]: UnknownSourceErrorParser
 }
 
 export const REPORTERS: Record<ReportType, (error: LiqualityError) => void> = {
@@ -76,4 +79,11 @@ export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMess
             suggestions: []
         }
     }
+}
+
+export const ERROR_VALIDATORS: Omit<Record<ErrorSource, (error: unknown) => boolean>, ErrorSource.UnknownSource> = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    OneInchAPI: (_error: unknown) => {
+        return true;
+    },
 }

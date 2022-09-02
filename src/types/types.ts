@@ -15,6 +15,7 @@ export enum ErrorType {
 
 export enum ErrorSource {
     OneInchAPI = 'OneInchAPI',
+    UnknownSource = 'UnknownSource',
 }
 
 export interface ErrorParser<SourceError> {
