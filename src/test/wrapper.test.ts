@@ -3,7 +3,7 @@ import { ErrorMessages, ERROR_CODES, REPORTERS } from "../config";
 import { LiqualityError } from "../liquality-error";
 import { ErrorType, ErrorSource, ReportType } from "../types/types";
 import { OneInchAPIErrorParser } from "../parsers";
-import { wrap, wrapAsync } from "../wrapper";
+import { withErrorWrapper, withErrorWrapperAsync } from "../wrapper";
 import { setReportConfig } from "../reporters";
 
 // These tests are focused on checking the functionality of Wrapper.
@@ -25,7 +25,7 @@ describe('wrapped call', () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrap(functionWithError,ErrorSource.OneInchAPI)
+            withErrorWrapper(functionWithError,ErrorSource.OneInchAPI)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -34,7 +34,7 @@ describe('wrapped call', () => {
     describe('that throws error', () => {
         it('should throw a Liquality Error(extends Error) if function is sync',async () => {
             const error = getError(() => {
-                wrap(functionWithError,ErrorSource.OneInchAPI)
+                withErrorWrapper(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(error).toBeInstanceOf(Error);            
@@ -44,7 +44,7 @@ describe('wrapped call', () => {
 
         it('should throw a Liquality Error(extends Error) if function is async',async () => {
             const error = await getErrorAsync(async () => {
-                await wrapAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
+                await withErrorWrapperAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
             });
 
             expect(error).toBeInstanceOf(Error);
@@ -57,7 +57,7 @@ describe('wrapped call', () => {
             const reportToConsoleSpy = jest.spyOn(REPORTERS, ReportType.Console);
 
             getError(() => {
-                wrap(functionWithError,ErrorSource.OneInchAPI)
+                withErrorWrapper(functionWithError,ErrorSource.OneInchAPI)
             });
             
             expect(reportToConsoleSpy).toHaveBeenCalled();

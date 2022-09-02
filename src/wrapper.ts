@@ -4,7 +4,7 @@ import { reportLiqError } from "./reporters";
 import { ErrorSource } from "./types/types";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    export function wrap<T extends (...args:any[]) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj:any = null,): ReturnType<T> | undefined{
+    export function withErrorWrapper<T extends (...args:any[]) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj:any = null,): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return obj[func.name](...args);
@@ -16,7 +16,7 @@ import { ErrorSource } from "./types/types";
     }
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    export async function wrapAsync<T extends (...args:any[]) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj: any = null,): Promise<ReturnType<T> | undefined>{
+    export async function withErrorWrapperAsync<T extends (...args:any[]) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj: any = null,): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return await obj[func.name](...args);

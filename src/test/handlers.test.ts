@@ -3,7 +3,7 @@
 import { getError, functionWithError } from ".";
 import { LiqualityError } from "../liquality-error";
 import { ErrorSource, ErrorType } from "../types/types";
-import { wrap } from "../wrapper";
+import { withErrorWrapper } from "../wrapper";
 
 
 describe('For wrapped call', () => {
@@ -13,7 +13,7 @@ describe('For wrapped call', () => {
         const logSpy = jest.spyOn(console, 'log');
 
         getError(() => {
-            wrap(functionWithError,errorSource)
+            withErrorWrapper(functionWithError,errorSource)
         });
         
         expect(logSpy).toHaveBeenCalledTimes(0);
@@ -22,7 +22,7 @@ describe('For wrapped call', () => {
     it.each(errorSources)("Parser for %s return proper Error Meaning", errorSource => {
 
         const error: LiqualityError = getError(() => {
-            wrap(functionWithError,errorSource)
+            withErrorWrapper(functionWithError,errorSource)
         });
         
         expect(error.code).toBeTruthy();

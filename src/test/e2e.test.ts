@@ -3,7 +3,7 @@ import { ERROR_CODES } from "../config";
 import { LiqualityError } from "../liquality-error";
 import { OneInchSourceError } from "../types/source-errors";
 import { ErrorSource } from "../types/types";
-import { wrap } from "../wrapper";
+import { withErrorWrapper } from "../wrapper";
 
 // These tests are focused on showing how the wrapper would work E2E assuming for example that the frontend calls walletCore
 // WalletCore calls an external endpoint
@@ -33,7 +33,7 @@ const mockOneInchAPI = () => {
 
 class MockWalletCore {
     public swap() {
-        wrap(mockOneInchAPI, ErrorSource.OneInchAPI);
+        withErrorWrapper(mockOneInchAPI, ErrorSource.OneInchAPI);
     }
 }
 describe('Frontend calls to wallet core', () => {
