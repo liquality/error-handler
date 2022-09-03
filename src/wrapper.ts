@@ -5,6 +5,7 @@ import { getParser, isValidSourceError } from "./factory";
 import { LiqualityError } from "./liquality-error";
 import { reportLiqError } from "./reporters";
 import { ErrorSource, ErrorType } from "./types/types";
+import { isLiqualityError } from "./utils";
 
     export function withErrorWrapper<T extends (...args:Array<any>) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?:any): ReturnType<T> | undefined{
         try {
@@ -13,6 +14,7 @@ import { ErrorSource, ErrorType } from "./types/types";
             }
             return func(...args) as ReturnType<T>;
         } catch (error) {
+            if(isLiqualityError(error)) throw error;
             errorSource = isValidSourceError(errorSource, error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error,errorSource,args);
         }
@@ -25,12 +27,14 @@ import { ErrorSource, ErrorType } from "./types/types";
             }
             return await func(...args);
         } catch (error) {
+            if(isLiqualityError(error)) throw error
             errorSource = isValidSourceError(errorSource,error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error, errorSource, args);
         }
     }
 
     export function wrapError(error: unknown, errorSources: Array<ErrorSource> = [], args:Array<unknown> = []): LiqualityError{
+        if(isLiqualityError(error)) return error as LiqualityError;
         let parsedError: LiqualityError;
         
         // Get Error Sources that apply
