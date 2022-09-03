@@ -7,8 +7,8 @@ import { withErrorWrapper, withErrorWrapperAsync } from "../wrapper";
 import { setReportConfig } from "../reporters";
 
 // These tests are focused on checking the functionality of Wrapper.
-// OneInchQuoteAPI parser was arbitrarily chosen to aid in the test.
-// Since handleError function has been mocked here, the choice of OneInchQuoteAPI does not bias the test in any way.
+// OneInchAPI parser was arbitrarily chosen to aid in the test.
+// Since handleError function has been mocked here, the choice of OneInchAPI does not bias the test in any way.
 describe('wrapped call', () => {    
     beforeAll(() => {
         jest.spyOn(OneInchAPIErrorParser.prototype, 'parseError').mockImplementation(() => { return new LiqualityError({

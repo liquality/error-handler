@@ -1,29 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ERROR_VALIDATORS } from "./config";
-import { getParser } from "./factory";
+import { getParser, isValidSourceError } from "./factory";
 import { LiqualityError } from "./liquality-error";
 import { reportLiqError } from "./reporters";
 import { ErrorSource, ErrorType } from "./types/types";
 
-    export function withErrorWrapper<T extends (...args:Array<unknown>) => unknown>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?:any): ReturnType<T> | undefined{
+    export function withErrorWrapper<T extends (...args:Array<any>) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?:any): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return obj[func.name](...args);
             }
             return func(...args) as ReturnType<T>;
         } catch (error) {
+            errorSource = isValidSourceError(errorSource, error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error,errorSource,args);
         }
     }
     
-    export async function withErrorWrapperAsync<T extends (...args:Array<unknown>) => Promise<unknown>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?: any): Promise<ReturnType<T> | undefined>{
+    export async function withErrorWrapperAsync<T extends (...args:Array<any>) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?: any): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
                 return await obj[func.name](...args);
             }
             return await func(...args);
         } catch (error) {
+            errorSource = isValidSourceError(errorSource,error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error, errorSource, args);
         }
     }

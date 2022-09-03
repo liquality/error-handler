@@ -1,6 +1,6 @@
 // Import parser classes here
 
-import { PARSERS } from "../config";
+import { ERROR_VALIDATORS, PARSERS } from "../config";
 import { ErrorSource, ErrorParser } from "../types/types";
 
 const parserCache: { [key: string]: ErrorParser<unknown> } = {};
@@ -23,3 +23,7 @@ export function getParser(errorSource: ErrorSource): ErrorParser<unknown>{
 
     return createParser(errorSource);
 }
+
+export const isValidSourceError = (errorSource: ErrorSource, error: unknown) =>{
+    return ERROR_VALIDATORS[errorSource](error);
+} 

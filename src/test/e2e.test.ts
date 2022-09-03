@@ -1,5 +1,4 @@
 import { getError } from ".";
-import { ERROR_CODES } from "../config";
 import { LiqualityError } from "../liquality-error";
 import { OneInchSourceError } from "../types/source-errors";
 import { ErrorSource } from "../types/types";
@@ -11,7 +10,7 @@ import { withErrorWrapper, wrapError } from "../wrapper";
 
 // Example of a OneInchError
 const ONE_INCH_ERROR: OneInchSourceError =  {
-    statusCode: ERROR_CODES.OneInchAPI,
+    statusCode: 400,
     error: 'Bad Request',
     description: 'Insufficient liquidity',
     requestId: 'string',
@@ -20,7 +19,8 @@ const ONE_INCH_ERROR: OneInchSourceError =  {
         type: 'string',
         value: 'string'
       }
-    ]
+    ],
+    name: 'NodeError'
 };
 
 const mockOneInchAPI = () => {
@@ -44,6 +44,10 @@ class MockWalletCore {
         }    
     }
 
+    public swap3() {
+        withErrorWrapper(() => mockOneInchAPI() , ErrorSource.OneInchAPI);
+    }
+
 }
 describe('Frontend calls to wallet core', () => {
     const walletCore = new MockWalletCore();
@@ -62,6 +66,16 @@ describe('Frontend calls to wallet core', () => {
         it('should throw a Liquality Error(extends Error) if wrapped error approach is used',async () => {
             const error = getError(() => {
                 walletCore.swap2();
+            });
+            
+            expect(error).toBeInstanceOf(Error);            
+            expect(error).toBeInstanceOf(LiqualityError);
+            expect(error.rawError).toBe(ONE_INCH_ERROR);
+        });
+
+        it('should throw a Liquality Error(extends Error) if wrapped anonymous call approach is used',async () => {
+            const error = getError(() => {
+                walletCore.swap3();
             });
             
             expect(error).toBeInstanceOf(Error);            

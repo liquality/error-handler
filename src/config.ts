@@ -5,6 +5,8 @@ import { reportToEmail } from "./reporters/email";
 import {ReportType, ErrorSource, ErrorType, ErrorMessage } from "./types/types";
 import { OneInchAPIErrorParser } from "./parsers";
 import { UnknownSourceErrorParser } from "./parsers/UnknownSourceErrorParser";
+import { isRight } from "fp-ts/lib/Either";
+import { ONE_INCH_SOURCE_ERROR_TS } from "./types/source-errors";
 
 
 export const ERROR_CODES: Record<ErrorSource,number> = {
@@ -81,9 +83,12 @@ export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMess
     }
 }
 
-export const ERROR_VALIDATORS: Omit<Record<ErrorSource, (error: unknown) => boolean>, ErrorSource.UnknownSource> = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    OneInchAPI: (_error: unknown) => {
-        return true;
+export const ERROR_VALIDATORS: Record<ErrorSource, (error: unknown) => boolean> = {
+    OneInchAPI: (error: unknown) => {
+        return isRight(ONE_INCH_SOURCE_ERROR_TS.decode(error))
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    UnknownSource: (_error: unknown) => {
+        return true;
+    }
 }

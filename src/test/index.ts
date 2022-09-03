@@ -35,3 +35,7 @@ export async function getErrorAsync(func: () => Promise<unknown>) {
     }
 }
 
+export function throwError(error: unknown) {
+    throw error;
+}
+
