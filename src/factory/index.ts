@@ -1,7 +1,8 @@
 // Import parser classes here
 
-import { ERROR_VALIDATORS, PARSERS } from "../config";
+import { ERROR_ID_LENGTH, ERROR_VALIDATORS, PARSERS } from "../config";
 import { ErrorSource, ErrorParser } from "../types/types";
+import randomBytes from 'randombytes';
 
 const parserCache: { [key: string]: ErrorParser<unknown> } = {};
 
@@ -27,3 +28,7 @@ export function getParser(errorSource: ErrorSource): ErrorParser<unknown>{
 export const isValidSourceError = (errorSource: ErrorSource, error: unknown) =>{
     return ERROR_VALIDATORS[errorSource](error);
 } 
+
+export function suggestContactSupport(): string {
+    return `If it persist, please contact support on discord with errorId: ${randomBytes(ERROR_ID_LENGTH)}`
+}

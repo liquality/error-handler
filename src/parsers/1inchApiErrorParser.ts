@@ -16,31 +16,39 @@ export class OneInchAPIErrorParser implements ErrorParser<OneInchSourceError> {
             switch (error.description.toLowerCase()) {
                 case "Insufficient liquidity".toLowerCase():
                     errorType = ErrorType.InsufficientLiquidity
+                    userMsg = ErrorMessages.InsufficientLiquidity();
                     break;
                 case "Cannot estimate".toLowerCase():
                     errorType = ErrorType.QuoteError
                     devMsg = "1inch could not estimate a quote for the swap".toLowerCase()
+                    userMsg = ErrorMessages.QuoteError();
                     break;
                 case "You may not have enough ETH balance for gas fee".toLowerCase():
-                    errorType = ErrorType.InsufficientGasFee
-                    userMsg = ErrorMessages.InsufficientGasFee()
+                    errorType = ErrorType.InternalError
+                    userMsg = ErrorMessages.InternalError()
+
                     break;
                 case "FromTokenAddress cannot be equals to toTokenAddress".toLowerCase():
                     errorType = ErrorType.InternalError
+                    userMsg = ErrorMessages.InternalError();
                     break;
                 case "Cannot estimate. Don't forget about miner fee. Try to leave the buffer of ETH for gas".toLowerCase():
                     errorType = ErrorType.QuoteError
                     devMsg = "1inch internal error, could be related to slippage for specific tokens"
+                    userMsg = ErrorMessages.QuoteError();
                     break;
                 case "Not enough balance".toLowerCase():
                     errorType = ErrorType.InsufficientFunds
+                    userMsg = ErrorMessages.InsufficientFunds();
                     break;
                 case "Not enough allowance".toLowerCase():
                     errorType = ErrorType.InternalError
                     devMsg = "Check the approval process for 1inch, approvals are not being made correctly"
+                    userMsg = ErrorMessages.InternalError()
                     break;
                 default:
                     errorType = ErrorType.Unknown
+                    userMsg = ErrorMessages.Unknown();
                     break;
             }
         }

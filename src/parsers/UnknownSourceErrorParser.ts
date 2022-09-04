@@ -9,7 +9,7 @@ export class UnknownSourceErrorParser implements ErrorParser<unknown> {
             {
                 errorType: ErrorType.Unknown, 
                 code: ERROR_CODES.UnknownSource, 
-                userMsg: ErrorMessages[ErrorType.Unknown](ERROR_CODES.UnknownSource), 
+                userMsg: ErrorMessages[ErrorType.Unknown](), 
                 devMsg: '', 
                 rawError: error as never, 
                 data
