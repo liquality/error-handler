@@ -9,12 +9,12 @@ export class LiqualityError extends Error {
     private _rawError: never;
     private _data: Array<unknown>;
 
-    constructor(error: {errorType: ErrorType, code: number, userMsg: ErrorMessage, devMsg: string|undefined, rawError: never, data: Array<unknown>}){
+    constructor(error: {errorType?: ErrorType, code?: number, userMsg: ErrorMessage, devMsg?: string, rawError?: never, data?: Array<unknown>}){
         super();
+        this._userMsg= error.userMsg;
         if(error?.code) this._code = error?.code;
         if(error?.errorType) this._errorType = error?.errorType;
         if(error?.devMsg) this._devMsg= error?.devMsg;
-        if(error?.userMsg) this._userMsg= error?.userMsg;
         if(error?.data) this._data= error?.data;
         if(error?.rawError) this._rawError = error?.rawError;
     }
