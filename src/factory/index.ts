@@ -30,5 +30,5 @@ export const isValidSourceError = (errorSource: ErrorSource, error: unknown) =>{
 } 
 
 export function suggestContactSupport(): string {
-    return `If it persist, please contact support on discord with errorId: ${randomBytes(ERROR_ID_LENGTH)}`
+    return `If it persist, please contact support on discord with errorId: ${randomBytes(ERROR_ID_LENGTH).toString('hex')}`
 }
