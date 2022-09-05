@@ -12,6 +12,7 @@ export class OneInchAPIErrorParser implements ErrorParser<OneInchSourceError> {
 
         if(error.name !== 'NodeError'){ // All OneInch errors must satisfy this because they are already wrapped in chainify
             errorType = ErrorType.Unknown;
+            userMsg = ErrorMessages.Unknown();
         }else{
             switch (error.description.toLowerCase()) {
                 case "Insufficient liquidity".toLowerCase():
@@ -53,8 +54,6 @@ export class OneInchAPIErrorParser implements ErrorParser<OneInchSourceError> {
             }
         }
 
-
-        userMsg = userMsg.cause ? userMsg : ErrorMessages[errorType]()
         return new LiqualityError({errorType, code: ERROR_CODES.OneInchAPI, userMsg, devMsg, 
         rawError: error as never, data});
     
