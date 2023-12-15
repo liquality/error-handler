@@ -1,4 +1,4 @@
-import { FAKE_ERROR, getError, functionWithError, asyncFunctionWithError, getErrorAsync } from ".";
+import { FAKE_ERROR, getError, functionWithError, asyncFunctionWithError, getErrorAsync, classWithErrorFunction } from ".";
 import { ErrorMessages, ERROR_CODES, REPORTERS } from "../config";
 import { LiqualityError } from "../liquality-error";
 import { ErrorType, ErrorSource, ReportType } from "../types/types";
@@ -7,8 +7,8 @@ import { withErrorWrapper, withErrorWrapperAsync } from "../wrapper";
 import { setReportConfig } from "../reporters";
 
 // These tests are focused on checking the functionality of Wrapper.
-// OneInchQuoteAPI parser was arbitrarily chosen to aid in the test.
-// Since handleError function has been mocked here, the choice of OneInchQuoteAPI does not bias the test in any way.
+// OneInchAPI parser was arbitrarily chosen to aid in the test.
+// Since handleError function has been mocked here, the choice of OneInchAPI does not bias the test in any way.
 describe('wrapped call', () => {    
     beforeAll(() => {
         jest.spyOn(OneInchAPIErrorParser.prototype, 'parseError').mockImplementation(() => { return new LiqualityError({
@@ -34,7 +34,7 @@ describe('wrapped call', () => {
     describe('that throws error', () => {
         it('should throw a Liquality Error(extends Error) if function is sync',async () => {
             const error = getError(() => {
-                withErrorWrapper(functionWithError,ErrorSource.OneInchAPI)
+                withErrorWrapper(functionWithError,ErrorSource.OneInchAPI, )
             });
             
             expect(error).toBeInstanceOf(Error);            
@@ -45,6 +45,28 @@ describe('wrapped call', () => {
         it('should throw a Liquality Error(extends Error) if function is async',async () => {
             const error = await getErrorAsync(async () => {
                 await withErrorWrapperAsync(asyncFunctionWithError,ErrorSource.OneInchAPI)
+            });
+
+            expect(error).toBeInstanceOf(Error);
+            expect(error).toBeInstanceOf(LiqualityError);
+            expect(error.rawError).toBe(FAKE_ERROR);
+        });
+
+        it('should throw a Liquality Error(extends Error) if function is a method of an instance',async () => {
+            const obj = new classWithErrorFunction();
+            const error = getError(() => {
+                withErrorWrapper(obj.functionWithError,ErrorSource.OneInchAPI, [], 8)
+            });
+            
+            expect(error).toBeInstanceOf(Error);            
+            expect(error).toBeInstanceOf(LiqualityError);
+            expect(error.rawError).toBe(FAKE_ERROR);
+        });
+
+        it('should throw a Liquality Error(extends Error) if async function is method of an instance',async () => {
+            const obj = new classWithErrorFunction();
+            const error = await getErrorAsync(async () => {
+                await withErrorWrapperAsync(obj.asyncfunctionWithError,ErrorSource.OneInchAPI, [], obj)
             });
 
             expect(error).toBeInstanceOf(Error);

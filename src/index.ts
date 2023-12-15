@@ -1,4 +1,3 @@
-import { ErrorSource } from "./types/types";
-
-// Export error sources and wrapper
-export { ErrorSource };
+export { setReportConfig } from "./reporters"; 
+export { ErrorSource } from "./types/types";
+export *  from "./wrapper";

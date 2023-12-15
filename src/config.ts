@@ -2,9 +2,12 @@ import { LiqualityError } from "./liquality-error";
 import { reportToConsole } from "./reporters/console";
 import { reportToDiscord } from "./reporters/discord";
 import { reportToEmail } from "./reporters/email";
-import {ReportType, ErrorSource, ErrorType, ErrorMessage } from "./types/types";
+import {ReportType, ErrorSource, ErrorType } from "./types/types";
 import { OneInchAPIErrorParser } from "./parsers";
 import { UnknownSourceErrorParser } from "./parsers/UnknownSourceErrorParser";
+import { isRight } from "fp-ts/lib/Either";
+import { ONE_INCH_SOURCE_ERROR_TS } from "./types/source-errors";
+import { suggestContactSupport } from "./factory";
 
 
 export const ERROR_CODES: Record<ErrorSource,number> = {
@@ -24,13 +27,14 @@ export const REPORTERS: Record<ReportType, (error: LiqualityError) => void> = {
     [ReportType.Email]: reportToEmail,
 }
 
-export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMessage> = {
-    [ErrorType.InternalError]: (errorcode: string) => {
+export const ERROR_ID_LENGTH = 10;
+export const ErrorMessages = {
+    [ErrorType.InternalError]: () => {
         return {
             cause: 'Sorry, something went wrong while processing this transaction.',
             suggestions: [
                 'Try again at a later time',
-                `If it persist, please contact support on discord with errorCode: ${errorcode}`
+                suggestContactSupport(),
             ]
         }
     },
@@ -45,13 +49,13 @@ export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMess
             ]
         }
     },
-    [ErrorType.QuoteError]: (errorcode: string) => {
+    [ErrorType.QuoteError]: () => {
         return {
             cause: 'Sorry, quote could not be obtained for this swap at the moment, this could be due to network congestion or the pair you\'re trying to swap.',
             suggestions: [
                 'Try another swap pair',
                 'Try again at a later time',
-                `If it persist, please contact support on discord with errorCode: ${errorcode}`
+                suggestContactSupport(),
             ]
         }
     },
@@ -81,9 +85,14 @@ export const ErrorMessages: Record<ErrorType,(...args:Array<unknown>)=>ErrorMess
     }
 }
 
-export const ERROR_VALIDATORS: Omit<Record<ErrorSource, (error: unknown) => boolean>, ErrorSource.UnknownSource> = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    OneInchAPI: (_error: unknown) => {
-        return true;
+
+
+export const ERROR_VALIDATORS: Record<ErrorSource, (error: unknown) => boolean> = {
+    OneInchAPI: (error: unknown) => {
+        return isRight(ONE_INCH_SOURCE_ERROR_TS.decode(error))
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    UnknownSource: (_error: unknown) => {
+        return true;
+    }
 }

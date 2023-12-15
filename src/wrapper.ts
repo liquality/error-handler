@@ -1,35 +1,40 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ERROR_VALIDATORS } from "./config";
-import { getParser } from "./factory";
+import { getParser, isValidSourceError } from "./factory";
 import { LiqualityError } from "./liquality-error";
 import { reportLiqError } from "./reporters";
 import { ErrorSource, ErrorType } from "./types/types";
+import { isLiqualityError } from "./utils";
 
-    export function withErrorWrapper<T extends (...args:Array<unknown>) => unknown>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj = null,): ReturnType<T> | undefined{
+    export function withErrorWrapper<T extends (...args:Array<any>) => any>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?:any): ReturnType<T> | undefined{
         try {
             if(obj && typeof obj[func.name] === 'function'){
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return (obj as any)[func.name](...args);
+                return obj[func.name](...args);
             }
             return func(...args) as ReturnType<T>;
         } catch (error) {
+            if(isLiqualityError(error)) throw error;
+            errorSource = isValidSourceError(errorSource, error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error,errorSource,args);
         }
     }
     
-    export async function withErrorWrapperAsync<T extends (...args:Array<unknown>) => Promise<unknown>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj = null,): Promise<ReturnType<T> | undefined>{
+    export async function withErrorWrapperAsync<T extends (...args:Array<any>) => Promise<any>>(func: T, errorSource: ErrorSource, args:Parameters<T> = [] as never, obj?: any): Promise<ReturnType<T> | undefined>{
         try {
             if(obj && typeof obj[func.name] === 'function'){
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return await (obj as any)[func.name](...args);
+                return await obj[func.name](...args);
             }
             return await func(...args);
         } catch (error) {
+            if(isLiqualityError(error)) throw error
+            errorSource = isValidSourceError(errorSource,error) ? errorSource : ErrorSource.UnknownSource
             throw parseError(error, errorSource, args);
         }
     }
 
     export function wrapError(error: unknown, errorSources: Array<ErrorSource> = [], args:Array<unknown> = []): LiqualityError{
+        if(isLiqualityError(error)) return error as LiqualityError;
         let parsedError: LiqualityError;
         
         // Get Error Sources that apply
@@ -41,7 +46,6 @@ import { ErrorSource, ErrorType } from "./types/types";
         // Stream line error sources
         const filteredSources: Array<ErrorSource>= [];
         errorSources.forEach(errorSource => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if((ERROR_VALIDATORS as any)[errorSource](error)) filteredSources.push(errorSource)
         })
 
@@ -62,7 +66,6 @@ import { ErrorSource, ErrorType } from "./types/types";
     }
 
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function parseError(error: unknown, errorSource: ErrorSource, data: Array<unknown> = []): LiqualityError {
         const parser = getParser(errorSource); // Get error parser class
         const liqError = parser.parseError(error, data); // Get a Liquality standard error from parser.
